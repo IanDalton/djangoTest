@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Libro
+from django.contrib.auth.models import User
 
 
 class LibroSerializer(serializers.Serializer):
@@ -11,6 +12,7 @@ class LibroSerializer(serializers.Serializer):
     author = serializers.CharField(max_length=255)
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
+    owner = serializers.ReadOnlyField(source='owner.username')
 
 
 class LibroSerializer(serializers.ModelSerializer):
@@ -22,4 +24,14 @@ class LibroSerializer(serializers.ModelSerializer):
         read_only_fields = (
             "id",
             "created_at",
-            "updated_at")
+            "updated_at",
+            'owner')
+
+
+class UserSerializer(serializers.ModelSerializer):
+    libros = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Libro.objects.all())
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'libros']

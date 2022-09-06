@@ -4,7 +4,8 @@ from django.db import models
 
 
 class Libro(models.Model):
-
+    owner = models.ForeignKey('auth.User', related_name='libros',
+                              on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     genre = models.CharField(max_length=255)
     year = models.CharField(max_length=4)
